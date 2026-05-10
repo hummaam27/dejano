@@ -1,0 +1,105 @@
+name: programming-concepts
+description: Daily programming concept explained in plain language with a concrete example.
+
+systemPrompt: |
+  You are a programming educator writing one short, accessible explainer per day for working developers.
+
+  REQUIREMENTS:
+  - Pick the angle the user gives you and explain the concept clearly in 2-4 sentences.
+  - Include exactly one concrete code example (any language that fits, ~3-8 lines).
+  - Tone: direct, practical, no hype. Treat the reader as a competent peer.
+  - Avoid generic platitudes. The reader should learn something specific.
+
+outputSchema: |
+  {
+    "title": "string — a punchy title for the concept",
+    "text": "string — 2-4 sentence explanation",
+    "example": "string — short code snippet illustrating the concept",
+    "language": "string — the language used in the example"
+  }
+
+subtopics:
+  - id: cs-tail-call-optimization
+    category: language-design
+    seed: Tail call optimization and why most languages don't do it
+  - id: cs-type-erasure-jvm
+    category: language-design
+    seed: Type erasure on the JVM and what it costs you
+  - id: cs-monomorphization-rust
+    category: language-design
+    seed: Rust's monomorphization and the binary-size tradeoff
+  - id: cs-structural-vs-nominal-typing
+    category: language-design
+    seed: Structural vs nominal typing through TypeScript and Java
+  - id: cs-memoization-vs-caching
+    category: patterns
+    seed: The difference between memoization and caching
+  - id: cs-cps-continuation-passing
+    category: patterns
+    seed: Continuation passing style and when it earns its weight
+  - id: cs-circuit-breaker
+    category: patterns
+    seed: The circuit breaker pattern in distributed systems
+  - id: cs-cap-theorem-real
+    category: distributed
+    seed: What the CAP theorem actually says (and what it doesn't)
+  - id: cs-vector-clocks
+    category: distributed
+    seed: Vector clocks and how they detect causality
+  - id: cs-quorum-reads-writes
+    category: distributed
+    seed: Quorum reads and writes in eventually-consistent stores
+  - id: cs-b-tree-vs-lsm
+    category: storage
+    seed: B-trees vs LSM-trees and the read/write tradeoff
+  - id: cs-write-amplification
+    category: storage
+    seed: Write amplification in SSDs and database engines
+  - id: cs-mvcc
+    category: storage
+    seed: Multi-version concurrency control in Postgres
+  - id: cs-bloom-filter
+    category: data-structures
+    seed: Bloom filters and the false-positive tradeoff
+  - id: cs-skip-list
+    category: data-structures
+    seed: Skip lists and why Redis uses them over balanced trees
+  - id: cs-hyperloglog
+    category: data-structures
+    seed: HyperLogLog for cardinality estimation at scale
+  - id: cs-merkle-tree
+    category: data-structures
+    seed: Merkle trees and how they verify large data sets cheaply
+  - id: cs-sql-isolation-levels
+    category: databases
+    seed: SQL isolation levels and the anomalies each one allows
+  - id: cs-deadlock-vs-livelock
+    category: concurrency
+    seed: Deadlock vs livelock and which is harder to debug
+  - id: cs-actor-model-erlang
+    category: concurrency
+    seed: The actor model and what Erlang gets right
+  - id: cs-tcp-congestion-control
+    category: networking
+    seed: TCP congestion control and why your downloads slow down
+  - id: cs-tls-handshake
+    category: networking
+    seed: The TLS handshake explained step by step
+  - id: cs-jit-vs-aot
+    category: compilers
+    seed: JIT vs AOT compilation and where each wins
+  - id: cs-ssa-form
+    category: compilers
+    seed: SSA form and why every modern compiler uses it
+  - id: cs-immutable-data-structures
+    category: functional
+    seed: Persistent immutable data structures and structural sharing
+  - id: cs-currying-vs-partial-application
+    category: functional
+    seed: Currying vs partial application — they're not the same
+  - id: cs-fork-vs-thread
+    category: systems
+    seed: fork() vs threads and the cost difference
+  - id: cs-copy-on-write
+    category: systems
+    seed: Copy-on-write and how fork() is fast on Linux

@@ -1,0 +1,106 @@
+name: world-trivia
+description: Daily multiple-choice trivia question covering world knowledge.
+
+systemPrompt: |
+  You are a trivia writer crafting one multiple choice question per day.
+
+  REQUIREMENTS:
+  - Exactly 4 options (a, b, c, d), each 6 words or fewer.
+  - One unambiguously correct answer; wrong options must be plausible, not silly.
+  - Aim for substance: prefer specific facts, names, dates, or events over generic "how many" trivia.
+  - Suitable for an audience aged 14+. No NSFW, no medical/legal advice, no living-people gossip.
+
+outputSchema: |
+  {
+    "question": "string — the question text",
+    "options": { "a": "string", "b": "string", "c": "string", "d": "string" },
+    "correctAnswer": "a" | "b" | "c" | "d",
+    "explanation": "string — one sentence on why it's correct",
+    "category": "string"
+  }
+
+subtopics:
+  - id: history-ancient-mesopotamia-cuneiform
+    category: history
+    seed: The invention of cuneiform writing in ancient Mesopotamia
+  - id: history-byzantine-fall-of-constantinople
+    category: history
+    seed: The 1453 fall of Constantinople and Mehmed II
+  - id: history-meiji-restoration
+    category: history
+    seed: Japan's Meiji Restoration and rapid industrialization
+  - id: history-songhai-empire
+    category: history
+    seed: The Songhai Empire and Askia the Great
+  - id: science-mitochondria-origin
+    category: science
+    seed: The endosymbiotic origin of mitochondria
+  - id: science-superconductivity
+    category: science
+    seed: Discovery of superconductivity by Heike Kamerlingh Onnes
+  - id: science-crispr-discovery
+    category: science
+    seed: How CRISPR was discovered as a bacterial immune system
+  - id: science-plate-tectonics-wegener
+    category: science
+    seed: Alfred Wegener and the early rejection of continental drift
+  - id: geography-aral-sea-shrinkage
+    category: geography
+    seed: The shrinking of the Aral Sea
+  - id: geography-strait-of-hormuz
+    category: geography
+    seed: The strategic importance of the Strait of Hormuz
+  - id: geography-atacama-desert
+    category: geography
+    seed: The Atacama Desert as the driest non-polar place on Earth
+  - id: geography-okavango-delta
+    category: geography
+    seed: The Okavango Delta as an inland river delta
+  - id: literature-borges-labyrinths
+    category: literature
+    seed: Jorge Luis Borges and his use of labyrinths
+  - id: literature-tale-of-genji
+    category: literature
+    seed: The Tale of Genji as the first novel
+  - id: literature-things-fall-apart
+    category: literature
+    seed: Chinua Achebe's Things Fall Apart and the Igbo society
+  - id: literature-one-hundred-years-solitude
+    category: literature
+    seed: Magical realism in García Márquez's One Hundred Years of Solitude
+  - id: art-bauhaus-school
+    category: art
+    seed: The Bauhaus school and its influence on modern design
+  - id: art-ukiyo-e-hokusai
+    category: art
+    seed: Hokusai and the Great Wave off Kanagawa
+  - id: art-dada-movement
+    category: art
+    seed: The Dada movement as a response to WWI
+  - id: art-frida-kahlo-symbolism
+    category: art
+    seed: Frida Kahlo's use of self-portrait symbolism
+  - id: tech-arpanet-first-message
+    category: technology
+    seed: The first message ever sent over ARPANET
+  - id: tech-unix-philosophy
+    category: technology
+    seed: The Unix philosophy of small composable tools
+  - id: tech-ada-lovelace-analytical-engine
+    category: technology
+    seed: Ada Lovelace's notes on Babbage's Analytical Engine
+  - id: tech-bitcoin-whitepaper
+    category: technology
+    seed: The Bitcoin whitepaper and Satoshi Nakamoto's pseudonym
+  - id: music-bebop-origins
+    category: music
+    seed: The origins of bebop in 1940s jazz
+  - id: music-afrobeat-fela-kuti
+    category: music
+    seed: Fela Kuti and the creation of Afrobeat
+  - id: music-twelve-tone-schoenberg
+    category: music
+    seed: Schoenberg's twelve-tone technique
+  - id: music-motown-detroit
+    category: music
+    seed: The Motown sound and its Detroit roots

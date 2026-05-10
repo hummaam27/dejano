@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>dejano — daily AI generator that refuses to repeat itself</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1830;
+        --paper: #fdfcf7;
+        --accent: #6d4dff;
+        --accent-soft: #ece6ff;
+        --rose: #e11d6f;
+        --rose-soft: #ffe4ee;
+        --leaf: #1f7a4d;
+        --leaf-soft: #d8f4e3;
+        --sun: #ffb524;
+        --sun-soft: #fff3d6;
+      }
+      body {
+        font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+        background:
+          radial-gradient(1200px 600px at 80% -20%, var(--sun-soft) 0%, transparent 60%),
+          radial-gradient(900px 500px at -10% 30%, var(--accent-soft) 0%, transparent 55%),
+          var(--paper);
+        color: var(--ink);
+        min-height: 100vh;
+      }
+      .serif { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; }
+      .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+      .card {
+        background: white;
+        border: 1px solid #ebe7df;
+        border-radius: 14px;
+        box-shadow:
+          0 1px 0 rgba(26, 24, 48, 0.04),
+          0 8px 24px -12px rgba(26, 24, 48, 0.12);
+      }
+      .btn-primary {
+        background: var(--ink);
+        color: white;
+        border-radius: 10px;
+        padding: 0.7rem 1.5rem;
+        font-weight: 600;
+        transition: transform 0.08s ease, background 0.15s ease;
+      }
+      .btn-primary:hover:not(:disabled) { background: var(--accent); }
+      .btn-primary:active:not(:disabled) { transform: translateY(1px); }
+      .btn-primary:disabled { background: #c8c4ba; cursor: not-allowed; }
+
+      .pill {
+        display: inline-flex; align-items: center; gap: 0.4rem;
+        padding: 0.2rem 0.6rem; border-radius: 999px;
+        font-size: 0.7rem; font-weight: 600; letter-spacing: 0.02em;
+      }
+      .pill-accent { background: var(--accent-soft); color: var(--accent); }
+      .pill-leaf { background: var(--leaf-soft); color: var(--leaf); }
+      .pill-rose { background: var(--rose-soft); color: var(--rose); }
+      .pill-sun { background: var(--sun-soft); color: #8a5a00; }
+
+      .ring-accept { box-shadow: 0 0 0 2px var(--leaf) inset, 0 6px 20px -8px rgba(31, 122, 77, 0.3); }
+      .ring-reject { box-shadow: 0 0 0 2px var(--rose) inset, 0 6px 20px -8px rgba(225, 29, 111, 0.3); }
+      .fade-in { animation: fade 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+      @keyframes fade {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .dot {
+        width: 6px; height: 6px; border-radius: 50%;
+        display: inline-block; margin-right: 0.4rem;
+      }
+
+      select.styled {
+        appearance: none;
+        background-color: white;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231a1830' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.85rem center;
+        padding-right: 2rem;
+      }
+
+      .topbar {
+        background: linear-gradient(135deg, var(--ink) 0%, #2d2354 60%, var(--accent) 100%);
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="max-w-6xl mx-auto px-6 py-10">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="pill" style="background: rgba(255,255,255,0.15); color: white;">
+            <span class="dot" style="background: #ffb524;"></span> portfolio demo
+          </span>
+          <span class="text-white/60 text-xs mono">v0.1.0</span>
+        </div>
+        <h1 class="text-7xl font-extrabold tracking-tight leading-none">
+          déjà<span style="color: var(--sun);">no</span><span class="serif italic text-5xl text-white/70">.</span>
+        </h1>
+        <p class="serif italic text-3xl text-white/85 mt-3">
+          a daily AI generator that refuses to repeat itself.
+        </p>
+        <p class="text-white/70 mt-4 max-w-2xl leading-relaxed">
+          Type any topic. Click <span class="font-semibold text-white">Generate</span> repeatedly.
+          déjano remembers what it already wrote and
+          <span style="color: #ffb524;" class="font-semibold">refuses to repeat itself</span> —
+          if the model drifts toward something semantically close to a past answer, it gets rejected and retried.
+        </p>
+      </div>
+    </div>
+
+    <main class="max-w-6xl mx-auto px-6 py-10">
+      <section class="card p-6 mb-8">
+        <label class="block text-[11px] font-bold uppercase tracking-widest text-neutral-500 mb-2">
+          Topic
+        </label>
+        <div class="flex flex-wrap items-stretch gap-3">
+          <input
+            id="freeTopic"
+            type="text"
+            placeholder="e.g. ancient Rome, octopus biology, jazz history…"
+            class="flex-1 min-w-[280px] border border-neutral-200 rounded-lg px-4 py-3 text-base focus:outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent-soft)]"
+          />
+          <button id="go" class="btn-primary">Generate →</button>
+          <button
+            id="burst"
+            class="btn-primary"
+            style="background: var(--accent);"
+            title="Run Generate 10 times in a row to fill history and trigger rejections."
+          >
+            Burst ×10
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mt-4">
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-widest text-neutral-500 mb-2">
+              Model
+            </label>
+            <select
+              id="model"
+              class="styled w-full border border-neutral-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[var(--accent)]"
+            >
+              <option value="gpt-5.5">gpt-5.5</option>
+              <option value="gpt-5.5-pro">gpt-5.5-pro</option>
+              <option value="gpt-5.4">gpt-5.4</option>
+              <option value="gpt-5.4-pro">gpt-5.4-pro</option>
+              <option value="gpt-5.4-mini" selected>gpt-5.4-mini</option>
+              <option value="gpt-5.4-nano">gpt-5.4-nano</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-widest text-neutral-500 mb-2">
+              Length
+            </label>
+            <div class="flex gap-2">
+              <select
+                id="length"
+                class="styled flex-1 border border-neutral-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[var(--accent)]"
+              >
+                <option value="short">Short · ~30 words</option>
+                <option value="medium" selected>Medium · ~80 words</option>
+                <option value="long">Long · ~150 words</option>
+                <option value="custom">Custom…</option>
+              </select>
+              <input
+                id="customLength"
+                type="number"
+                min="5"
+                max="800"
+                placeholder="words"
+                class="hidden w-24 border border-neutral-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[var(--accent)]"
+              />
+            </div>
+          </div>
+        </div>
+
+        <details class="mt-4 text-sm">
+          <summary class="cursor-pointer text-neutral-500 hover:text-neutral-700">
+            Advanced — use a curated topic pack instead
+          </summary>
+          <div class="mt-3">
+            <select
+              id="topic"
+              class="styled w-full border border-neutral-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[var(--accent)]"
+            >
+              <option value="">— freeform mode (use the box above) —</option>
+            </select>
+            <p class="text-xs text-neutral-500 mt-2">
+              Topic packs are YAML files in <code class="mono">topics/</code> with curated subtopic seeds.
+              Useful for production use where you want consistent style and forced topic rotation.
+            </p>
+          </div>
+        </details>
+      </section>
+
+      <div class="mb-6 text-sm text-neutral-500 leading-relaxed max-w-3xl">
+        <span class="font-semibold text-neutral-700">How to use:</span>
+        Type a topic, hit <span class="mono">Generate</span>. The first answer is always fresh.
+        Click again — the model has to find a new angle. After 5–8 clicks, you'll start seeing
+        <span class="mono text-[var(--rose)]">rejection cards</span>: déjano caught the model trying to repeat itself.
+        Use <span class="mono text-[var(--accent)]">Burst ×10</span> to fast-forward to that moment.
+      </div>
+
+      <section class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div class="lg:col-span-3 card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-bold uppercase tracking-widest text-neutral-500">
+              Live attempts
+            </h2>
+            <span class="pill pill-accent" id="status-pill">idle</span>
+          </div>
+          <div id="stream" class="space-y-3 min-h-[360px]">
+            <div class="text-neutral-400 italic serif text-lg">— click Generate to begin —</div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-2 card p-6">
+          <h2 class="text-sm font-bold uppercase tracking-widest text-neutral-500 mb-4">
+            History
+          </h2>
+          <div id="history" class="space-y-3 max-h-[600px] overflow-auto pr-1">
+            <div class="text-neutral-400 italic serif text-lg">— loading —</div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="mt-12 pt-6 border-t border-neutral-200 text-xs text-neutral-500 mono">
+        <code>POST /api/generate</code> streams Server-Sent Events. Dedup uses cosine similarity over
+        <code>text-embedding-3-small</code> (512 dims) backed by Jaccard token overlap as a cheap fast-fail.
+      </footer>
+    </main>
+
+    <script type="module">
+      const $stream = document.getElementById('stream');
+      const $history = document.getElementById('history');
+      const $topic = document.getElementById('topic');
+      const $freeTopic = document.getElementById('freeTopic');
+      const $go = document.getElementById('go');
+      const $burst = document.getElementById('burst');
+      const $status = document.getElementById('status-pill');
+
+      function currentSource() {
+        const free = $freeTopic.value.trim();
+        const pack = $topic.value;
+        if (pack) return { kind: 'pack', value: pack };
+        if (free) return { kind: 'free', value: free };
+        return null;
+      }
+
+      function buildBody(src) {
+        const base = src.kind === 'pack' ? { topic: src.value } : { freeTopic: src.value };
+        const lengthSelect = document.getElementById('length').value;
+        const body = {
+          ...base,
+          model: document.getElementById('model').value,
+          length: lengthSelect,
+        };
+        if (lengthSelect === 'custom') {
+          const n = parseInt(document.getElementById('customLength').value, 10);
+          if (Number.isFinite(n) && n > 0) body.customWords = n;
+        }
+        return body;
+      }
+
+      function buildItemsQuery(src) {
+        return src.kind === 'pack'
+          ? `topic=${encodeURIComponent(src.value)}`
+          : `freeTopic=${encodeURIComponent(src.value)}`;
+      }
+
+      function setStatus(text, kind) {
+        $status.textContent = text;
+        $status.className = 'pill ' + (
+          kind === 'running' ? 'pill-sun' :
+          kind === 'accept' ? 'pill-leaf' :
+          kind === 'reject' ? 'pill-rose' :
+          'pill-accent'
+        );
+      }
+
+      async function loadTopics() {
+        const res = await fetch('/api/topics');
+        const packs = await res.json();
+        $topic.innerHTML =
+          `<option value="">— freeform mode (use the box above) —</option>` +
+          packs
+            .map(
+              (p) =>
+                `<option value="${p.file}">${p.name} · ${p.subtopicCount} seeds · ${p.historyCount} generated</option>`,
+            )
+            .join('');
+        await loadHistory();
+      }
+
+      async function loadHistory() {
+        const src = currentSource();
+        if (!src) {
+          $history.innerHTML = `<div class="text-neutral-400 italic serif text-lg">— type a topic above —</div>`;
+          return;
+        }
+        const res = await fetch(`/api/items?${buildItemsQuery(src)}`);
+        const items = await res.json();
+        if (items.length === 0) {
+          $history.innerHTML = `<div class="text-neutral-400 italic serif text-lg">— empty —</div>`;
+          return;
+        }
+        $history.innerHTML = items
+          .map(
+            (i) => `
+              <div class="border-l-4 border-[var(--accent-soft)] pl-3 py-1">
+                <div class="text-[10px] mono text-neutral-400 mb-0.5">
+                  ${new Date(i.createdAt + 'Z').toLocaleString()} · ${escapeHtml(i.subtopicId)}
+                </div>
+                <div class="text-sm text-neutral-700 leading-snug">${escapeHtml(i.text)}</div>
+              </div>`,
+          )
+          .join('');
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(
+          /[&<>"']/g,
+          (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c],
+        );
+      }
+
+      function appendStream(html) {
+        const div = document.createElement('div');
+        div.className = 'fade-in';
+        div.innerHTML = html;
+        $stream.appendChild(div);
+        $stream.scrollTop = $stream.scrollHeight;
+      }
+
+      $topic.addEventListener('change', () => {
+        if ($topic.value) $freeTopic.value = '';
+        loadHistory();
+      });
+      $freeTopic.addEventListener('input', () => {
+        if ($freeTopic.value.trim()) $topic.value = '';
+      });
+      $freeTopic.addEventListener('change', loadHistory);
+      $freeTopic.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') $go.click();
+      });
+
+      const $length = document.getElementById('length');
+      const $customLength = document.getElementById('customLength');
+      function syncCustomLengthVisibility() {
+        if ($length.value === 'custom') {
+          $customLength.classList.remove('hidden');
+          if (!$customLength.value) $customLength.value = '60';
+        } else {
+          $customLength.classList.add('hidden');
+        }
+      }
+      $length.addEventListener('change', syncCustomLengthVisibility);
+      syncCustomLengthVisibility();
+
+      async function runOne(src, { clearStream = true } = {}) {
+        if (clearStream) $stream.innerHTML = '';
+        setStatus('running…', 'running');
+
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(buildBody(src)),
+        });
+
+        if (!res.ok || !res.body) {
+          appendStream(`<div class="text-[var(--rose)] font-semibold">Request failed (${res.status})</div>`);
+          setStatus('error', 'reject');
+          return false;
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const events = buffer.split('\n\n');
+          buffer = events.pop() ?? '';
+          for (const evt of events) handleEvent(evt);
+        }
+        return true;
+      }
+
+      function setBusy(busy) {
+        $go.disabled = busy;
+        $burst.disabled = busy;
+      }
+
+      $go.addEventListener('click', async () => {
+        const src = currentSource();
+        if (!src) {
+          $stream.innerHTML = '';
+          appendStream(`<div class="text-[var(--rose)] font-semibold">Type a topic first.</div>`);
+          return;
+        }
+        setBusy(true);
+        try {
+          await runOne(src);
+        } catch (err) {
+          appendStream(`<div class="text-[var(--rose)]">${escapeHtml(err.message)}</div>`);
+          setStatus('error', 'reject');
+        } finally {
+          setBusy(false);
+          loadTopics();
+          loadHistory();
+        }
+      });
+
+      $burst.addEventListener('click', async () => {
+        const src = currentSource();
+        if (!src) {
+          $stream.innerHTML = '';
+          appendStream(`<div class="text-[var(--rose)] font-semibold">Type a topic first.</div>`);
+          return;
+        }
+        setBusy(true);
+        $stream.innerHTML = '';
+        appendStream(
+          `<div class="serif italic text-lg text-neutral-600">— firing 10 generations in sequence —</div>`,
+        );
+        try {
+          for (let i = 0; i < 10; i++) {
+            appendStream(
+              `<div class="text-xs mono text-neutral-400 mt-3 mb-1">─── run ${i + 1} of 10 ───</div>`,
+            );
+            await runOne(src, { clearStream: false });
+          }
+        } catch (err) {
+          appendStream(`<div class="text-[var(--rose)]">${escapeHtml(err.message)}</div>`);
+          setStatus('error', 'reject');
+        } finally {
+          setBusy(false);
+          loadTopics();
+          loadHistory();
+        }
+      });
+
+      function handleEvent(raw) {
+        const lines = raw.split('\n');
+        let event = 'message';
+        let data = '';
+        for (const line of lines) {
+          if (line.startsWith('event:')) event = line.slice(6).trim();
+          else if (line.startsWith('data:')) data += line.slice(5).trim();
+        }
+        if (!data) return;
+        let payload;
+        try { payload = JSON.parse(data); } catch { return; }
+
+        if (event === 'start') {
+          appendStream(`
+            <div class="flex items-center gap-2 text-sm">
+              <span class="pill pill-accent">pack</span>
+              <span class="font-semibold">${escapeHtml(payload.pack)}</span>
+              <span class="text-neutral-400 mono text-xs">· ${payload.history} prior · ${payload.subtopics} seeds</span>
+            </div>
+          `);
+        } else if (event === 'attempt') {
+          if (payload.rejected) {
+            appendStream(`
+              <div class="ring-reject rounded-xl p-4" style="background: var(--rose-soft);">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="pill pill-rose">attempt ${payload.attempt} · rejected</span>
+                  <span class="text-xs mono text-[var(--rose)] font-semibold">
+                    ${payload.rejected.reason} = ${payload.rejected.similarity.toFixed(3)}
+                  </span>
+                </div>
+                <div class="text-sm text-neutral-700 leading-snug">
+                  conflicts with prior:
+                  <span class="serif italic text-neutral-800 text-base">"${escapeHtml(payload.rejected.conflictingText.slice(0, 160))}"</span>
+                </div>
+              </div>
+            `);
+          } else {
+            appendStream(`
+              <div class="flex items-center gap-2 text-sm">
+                <span class="pill pill-sun">attempt ${payload.attempt}</span>
+                <span class="text-neutral-500">trying seed</span>
+                <span class="mono text-xs text-neutral-700">${escapeHtml(payload.subtopic.id)}</span>
+              </div>
+            `);
+          }
+        } else if (event === 'accepted') {
+          setStatus('accepted', 'accept');
+          appendStream(`
+            <div class="ring-accept rounded-xl p-5" style="background: var(--leaf-soft);">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="pill pill-leaf">✓ accepted</span>
+              </div>
+              <div class="serif text-2xl text-neutral-900 leading-tight mb-3">
+                ${escapeHtml(payload.text)}
+              </div>
+              ${renderPayload(payload.payload)}
+            </div>
+          `);
+        } else if (event === 'error') {
+          setStatus('error', 'reject');
+          appendStream(`
+            <div class="rounded-xl p-4" style="background: var(--rose-soft); color: var(--rose);">
+              <div class="font-semibold text-sm">✗ ${escapeHtml(payload.message)}</div>
+            </div>
+          `);
+        }
+      }
+
+      function renderPayload(p) {
+        if (!p || typeof p !== 'object') return '';
+        if (p.fact || p.why_it_matters) {
+          return `
+            <div class="mt-3 text-base text-neutral-800 leading-relaxed">${escapeHtml(p.fact ?? '')}</div>
+            ${p.why_it_matters ? `<div class="serif italic text-neutral-600 mt-3 text-base">${escapeHtml(p.why_it_matters)}</div>` : ''}
+          `;
+        }
+        if (p.options && p.correctAnswer) {
+          const opts = ['a', 'b', 'c', 'd']
+            .map((k) => {
+              const correct = k === p.correctAnswer;
+              return `
+                <div class="flex items-start gap-3 p-2 rounded-lg ${correct ? 'bg-white' : ''}">
+                  <span class="mono text-xs font-bold uppercase mt-0.5 ${correct ? 'text-[var(--leaf)]' : 'text-neutral-400'}">${k}</span>
+                  <span class="${correct ? 'text-neutral-900 font-semibold' : 'text-neutral-600'}">
+                    ${escapeHtml(p.options[k] ?? '')}
+                  </span>
+                  ${correct ? '<span class="ml-auto text-[var(--leaf)] text-sm">✓</span>' : ''}
+                </div>`;
+            })
+            .join('');
+          return `
+            <div class="space-y-1 text-sm">${opts}</div>
+            ${p.explanation ? `<div class="serif italic text-neutral-600 mt-3 text-base">${escapeHtml(p.explanation)}</div>` : ''}
+          `;
+        }
+        return `<pre class="text-xs mono text-neutral-600 mt-2 whitespace-pre-wrap">${escapeHtml(JSON.stringify(p, null, 2))}</pre>`;
+      }
+
+      loadTopics();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,97 @@
+name: weeknight-recipes
+description: A short weeknight recipe idea — fast, real food, no pretension.
+
+systemPrompt: |
+  You are writing one short weeknight dinner recipe idea per day, for someone who can cook but is tired.
+
+  REQUIREMENTS:
+  - 30 minutes or less, active time.
+  - Real ingredients you can buy at a normal grocery store.
+  - Concise: ingredients list, then 4-6 numbered steps, then one tip.
+  - No "elevated" language. Talk like a friend texting you a recipe.
+
+outputSchema: |
+  {
+    "title": "string — the dish name",
+    "summary": "string — one-sentence pitch",
+    "ingredients": ["string", "..."],
+    "steps": ["string", "..."],
+    "tip": "string — one practical note"
+  }
+
+subtopics:
+  - id: rec-miso-butter-pasta
+    category: pasta
+    seed: Miso butter pasta with garlic and scallion
+  - id: rec-anchovy-broccoli-orechiette
+    category: pasta
+    seed: Orecchiette with charred broccoli and anchovy
+  - id: rec-cacio-e-pepe-method
+    category: pasta
+    seed: Cacio e pepe done with a careful emulsion technique
+  - id: rec-shrimp-tomato-feta
+    category: seafood
+    seed: Sheet-pan shrimp with cherry tomatoes and feta
+  - id: rec-canned-tuna-rice-bowl
+    category: pantry
+    seed: Spicy canned-tuna rice bowl with mayo and crispy onions
+  - id: rec-chickpea-curry
+    category: pantry
+    seed: 25-minute chickpea curry with coconut milk and ginger
+  - id: rec-black-bean-quesadilla
+    category: pantry
+    seed: Crispy black bean quesadilla with pickled jalapeño
+  - id: rec-egg-fried-rice
+    category: rice
+    seed: Cold-rice egg fried rice with sesame oil
+  - id: rec-bibimbap-shortcut
+    category: rice
+    seed: Weeknight bibimbap-style bowl with whatever vegetables you have
+  - id: rec-soy-glazed-salmon
+    category: seafood
+    seed: Soy-glazed salmon with quick-pickled cucumber
+  - id: rec-roasted-cauliflower-tahini
+    category: vegetables
+    seed: Roasted cauliflower with tahini and pomegranate
+  - id: rec-smashed-cucumber-salad
+    category: vegetables
+    seed: Smashed cucumber salad with chili crisp
+  - id: rec-leek-and-potato-soup
+    category: soup
+    seed: Quick leek and potato soup with crème fraîche
+  - id: rec-tomato-bread-soup
+    category: soup
+    seed: Tomato bread soup (pappa al pomodoro) with stale bread
+  - id: rec-chicken-thighs-vinegar
+    category: chicken
+    seed: Pan-seared chicken thighs deglazed with vinegar
+  - id: rec-spatchcock-chicken-sheet
+    category: chicken
+    seed: Spatchcocked chicken on a sheet pan with potatoes
+  - id: rec-pork-chop-apple-pan-sauce
+    category: pork
+    seed: Pork chops with quick apple pan sauce
+  - id: rec-larb-style-ground-pork
+    category: pork
+    seed: Larb-style ground pork with herbs and lime
+  - id: rec-shakshuka
+    category: eggs
+    seed: Shakshuka with feta and bread for dipping
+  - id: rec-soft-scramble-toast
+    category: eggs
+    seed: French-style soft scrambled eggs on toast
+  - id: rec-tofu-mapo
+    category: tofu
+    seed: Mapo tofu shortcut with doubanjiang and ground pork
+  - id: rec-crispy-tofu-bowl
+    category: tofu
+    seed: Crispy cornstarch tofu bowl with peanut sauce
+  - id: rec-ground-beef-bulgogi
+    category: beef
+    seed: Ground beef bulgogi over rice with quick-pickled veg
+  - id: rec-steak-tacos-skirt
+    category: beef
+    seed: Skirt steak tacos with charred corn salsa
+  - id: rec-galbi-style-meatballs
+    category: beef
+    seed: Galbi-style sweet-soy meatballs in lettuce cups

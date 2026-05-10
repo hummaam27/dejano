@@ -1,0 +1,81 @@
+name: daily-stoic-prompt
+description: A daily reflection prompt drawn from Stoic philosophy.
+
+systemPrompt: |
+  You are writing a single morning reflection prompt rooted in Stoic philosophy — Marcus Aurelius, Epictetus, Seneca, Musonius Rufus.
+
+  REQUIREMENTS:
+  - One short prompt (1-2 sentences) the reader can sit with for 2 minutes.
+  - Quote or paraphrase a specific passage if relevant; cite source.
+  - No corporate "manifest your best self" language. Stay close to the original tone.
+  - The reflection should produce honest discomfort, not validation.
+
+outputSchema: |
+  {
+    "prompt": "string — the reflection prompt itself",
+    "source": "string — the philosopher and work, e.g. 'Marcus Aurelius, Meditations 4.7'",
+    "passage": "string — the passage or paraphrase being drawn from",
+    "guidance": "string — one sentence on how to use this prompt today"
+  }
+
+subtopics:
+  - id: stoic-marcus-impermanence
+    category: marcus-aurelius
+    seed: Impermanence of all things, especially achievement (Meditations Book 4)
+  - id: stoic-marcus-other-people
+    category: marcus-aurelius
+    seed: How to begin a day expecting difficult people (Meditations Book 2)
+  - id: stoic-marcus-cosmic-view
+    category: marcus-aurelius
+    seed: The view from above — looking at your life from cosmic distance (Meditations Book 7)
+  - id: stoic-epictetus-dichotomy
+    category: epictetus
+    seed: The dichotomy of control — what is up to us and what is not (Enchiridion 1)
+  - id: stoic-epictetus-role-ethics
+    category: epictetus
+    seed: Playing the role assigned to you well (Enchiridion 17)
+  - id: stoic-epictetus-progress-not-performance
+    category: epictetus
+    seed: The student who wants applause vs the one who wants progress (Discourses 3.23)
+  - id: stoic-seneca-shortness-of-life
+    category: seneca
+    seed: We do not lack time, we waste it (On the Shortness of Life)
+  - id: stoic-seneca-anger
+    category: seneca
+    seed: Anger as temporary madness (On Anger Book 1)
+  - id: stoic-seneca-letters-friendship
+    category: seneca
+    seed: Choosing whom to share your life with (Letter 3 to Lucilius)
+  - id: stoic-musonius-discipline-of-body
+    category: musonius
+    seed: The body as training ground for the will (Lectures 6)
+  - id: stoic-premeditatio-malorum
+    category: practices
+    seed: Premeditatio malorum — rehearsing what could go wrong
+  - id: stoic-evening-review
+    category: practices
+    seed: Seneca's evening review of one's own conduct
+  - id: stoic-amor-fati
+    category: practices
+    seed: Amor fati — loving what happens, not merely tolerating it
+  - id: stoic-memento-mori
+    category: practices
+    seed: Memento mori — daily awareness of mortality as a clarifier
+  - id: stoic-voluntary-discomfort
+    category: practices
+    seed: Voluntary discomfort as preparation for involuntary loss
+  - id: stoic-judgement-not-event
+    category: doctrine
+    seed: It is not events but our judgements about events that disturb us
+  - id: stoic-virtue-as-only-good
+    category: doctrine
+    seed: Virtue as the only good worth chasing
+  - id: stoic-preferred-indifferents
+    category: doctrine
+    seed: Preferred indifferents — health and wealth matter, but not for the reason you think
+  - id: stoic-sympatheia
+    category: doctrine
+    seed: Sympatheia — the interconnection of all things
+  - id: stoic-logos
+    category: doctrine
+    seed: The logos — the rational order of the universe and your part in it
