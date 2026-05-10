@@ -2,6 +2,8 @@
 
 > A daily AI generator that refuses to repeat itself.
 
+![déjano UI](./docs/hero.png)
+
 ## The problem
 
 LLMs are great at producing one good answer. They're terrible at producing 30 *different* good answers in a row. Ask GPT for a daily trivia question and within a week half of them are about the pyramids. The model has favorites and converges on them.
